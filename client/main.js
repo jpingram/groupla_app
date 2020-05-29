@@ -7,9 +7,11 @@ const moment = require('moment');
 //IMPORT REQUIRED HTML FILES FOR TEMPLATE ACCESS
 import './main.html';
 import './appLayout.html';
+import './groupHomePage.html';
 import './calender.html';
 import './dayDisplay.html';
 import './dayEdit.html';
+import './timeline.html';
 
 import './testData.js';
 
@@ -42,6 +44,11 @@ Router.onBeforeAction(
 );
 
 Router.route('/', function(){
+  this.render('groupHomePage');
+});
+
+Router.route('/calender', function(){
+  Session.set('status', 'calender');
   this.render('calender');
 });
 
@@ -80,11 +87,29 @@ Router.route('/day/:_id/edit', function(){
   );
 });
 
+Router.route('/timeline', function(){
+  Session.set('status', 'timeline');
+  this.render('timeline');
+});
+
+Template.groupHomePage.events({
+  "click #calender-link":function(event){
+    Router.go('/calender');
+  },
+  "click #timeline-link":function(event){
+    Router.go('/timeline');
+  },
+});
+
 Template.dateForm.onRendered(function(){
+  //set up datetimepicker object
   $('#datepicker').datetimepicker({
     daysOfWeekDisabled:[1,2,3,4,5,6],
     format:'MM/DD/YYYY',
   });
+  //set the value of the input form the datetimepicker is attached to 
+  //to a string representation the current active date
+  $('#datepicker').prop('value', moment(Session.get('active-date')).format('MM/DD/YYYY'));
 });
 
 Template.dateForm.events({
@@ -185,16 +210,8 @@ Template.weekDisplay.helpers({
 });
 
 Template.dayDisplay.helpers({
-  "getAttReqMet":function(id){
-    var requirement = logs.findOne({dateId:id}).attReqValue;
-    if(logs.findOne({dateId:id}).availValue >= requirement){
-      return true;
-    }else{
-      return false;
-    }
-  },
-  "availabilityDataExists":function(id){
-    return (logs.findOne({dateId:id}).availFlag || logs.findOne({dateId:id}).unavailFlag);
+  "isAppStatusCalender":function(){
+    return (Session.get('status') == 'calender');
   },
   "isLogEmpty":function(log){
     if(log){
@@ -221,9 +238,23 @@ Template.dayDisplay.helpers({
       return true;
     }
   },
+  "getAttReqMet":function(id){
+    var requirement = logs.findOne({dateId:id}).attReqValue;
+    if(logs.findOne({dateId:id}).availValue >= requirement){
+      return true;
+    }else{
+      return false;
+    }
+  },
+  "availabilityDataExists":function(id){
+    return (logs.findOne({dateId:id}).availFlag || logs.findOne({dateId:id}).unavailFlag);
+  },
 });
 
 Template.dayEdit.helpers({
+  "isAppStatusCalender":function(){
+    return (Session.get('status') == 'calender');
+  },
   "setUpSession":function(id){
     var log = logs.findOne({dateId:id});
     Session.set('editEvent', false);
@@ -345,10 +376,16 @@ Template.dayEdit.events({
   },
   "submit #js-day-edit-form":function(event){
     var date_id = $('#dateIDBox').prop('value');
+    var info = date_id.split('-');
+    var sort_id = info[2] + '-' + info[0] + '-' + info[1];
 
     //set up a temporary log object with default values
     var newLog = {
       dateId:date_id,
+      sortId:sort_id,
+      year:info[2],
+      month:info[0],
+      day:info[1],
       eventFlag:false,
       eventTitle:"",
       eventDescription:"",
@@ -429,6 +466,17 @@ Template.dayEdit.events({
   },
   "click .js-update-day-log":function(event){
     $('#js-day-edit-form').submit();
+  },
+});
+
+Template.timelineContent.helpers({
+  "getLogs":function(){
+    return logs.find({}, {sort:{sortId:1}});
+  },
+  "getDateString":function(id){
+    var info = id.split('-');
+    //return (info[0] + '/' + info[1] + '/' + info[2]);
+    return (new Date(info[2], info[0]-1, info[1])).toDateString();
   },
 });
 
@@ -544,6 +592,10 @@ function getDefaultAttValues(log){
 /*if(logs.findOne() == undefined){
   logs.insert({
     dateId:"05-30-2020",
+    sortId:"2020-05-30",
+    year:2020,
+    month:05,
+    day:30,
     eventFlag:true,
     eventTitle:"Road Trip",
     eventDescription:"We've grabbed our friends and we're going on an adventure.",
@@ -563,6 +615,10 @@ function getDefaultAttValues(log){
   });
   logs.insert({
     dateId:"05-26-2020",
+    sortId:"2020-05-26",
+    year:2020,
+    month:05,
+    day:26,
     eventFlag:false,
     eventTitle:"Road Trip",
     eventDescription:"We've grabbed our friends and we're going on an adventure.",
@@ -582,6 +638,10 @@ function getDefaultAttValues(log){
   });
   logs.insert({
     dateId:"05-25-2020",
+    sortId:"2020-05-25",
+    year:2020,
+    month:05,
+    day:25,
     eventFlag:true,
     eventTitle:"Meeting",
     eventDescription:"We gotta plan our moves going forward.",
@@ -601,6 +661,10 @@ function getDefaultAttValues(log){
   });
   logs.insert({
     dateId:"05-15-2020",
+    sortId:"2020-05-15",
+    year:2020,
+    month:05,
+    day:15,
     eventFlag:true,
     eventTitle:"BBQ",
     eventDescription:"Just hangin' out and grilling.",

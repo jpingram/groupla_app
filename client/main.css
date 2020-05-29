@@ -65,3 +65,21 @@ body{
 .avail-detail-text{
    margin-left: 20px;
 }
+
+.group-page-link{
+   border: .5em solid black;
+   border-radius: 2em;
+   padding: 1em;
+   min-height: 10em;
+   text-align: center;
+   background-color: snow;
+}
+
+.group-page-link:hover{
+   border: .5em solid black;
+   border-radius: 2em;
+   padding: 1em;
+   min-height: 10em;
+   text-align: center;
+   background-color: lightslategray;
+};

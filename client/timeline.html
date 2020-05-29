@@ -1,0 +1,41 @@
+<template name="timeline">
+  <body>
+    {{> timelineBreadcrumb}}
+    {{> timelineContent}}
+  </body>
+</template>
+
+<template name="timelineBreadcrumb">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Group Home</a></li>
+            <li class="breadcrumb-item active">Timeline</li>
+          </ol>
+        </nav>
+      </div> <!-- END col -->
+    </div> <!-- END row -->
+  </div> <!-- END container -->
+</template> <!-- END timelineBreadcrumb -->
+
+<template name="timelineContent">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12" style="text-align:center">
+        <h2 class="jumbotron"><strong>Timeline</strong></h2>
+      </div>
+
+      {{#each getLogs}}
+        {{#if timelineFlag}}
+        <div class="col-xs-12" style="text-align:center">
+          <h1 style="font-size:2em"><strong>Log for: <a href="/day/{{dateId}}">{{getDateString dateId}}</a></strong></h1>
+          <p style="font-size:1.25em">{{timelineDetails}}</p>
+          <hr/>
+        </div>
+        {{/if}} <!-- END if timelineFlag -->
+      {{/each}} <!-- END each getLogs -->
+    </div> <!-- END row -->
+  </div> <!-- END container -->
+</template>

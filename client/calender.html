@@ -1,6 +1,7 @@
 <template name="calender">
   <body>
     {{> breadcrumb}}
+    {{> calenderTitle}}
     {{> dateForm}}
     {{> weekDisplay}}
   </body>
@@ -12,6 +13,7 @@
       <div class="col-md-12">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Group Home</a></li>
             <li class="breadcrumb-item active">Calender</li>
           </ol>
         </nav>
@@ -20,13 +22,23 @@
   </div> <!-- END container -->
 </template>
 
+<template name="calenderTitle">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12" style="text-align:center">
+        <h2 class="jumbotron"><strong>Calender</strong></h2>
+      </div>
+    </div>
+  </div>
+</template>
+
 <template name="dateForm">
   <div class="container" style="position: relative">
     <div class="row">
 
       <div class="col-md-2 col-xs-6">
-        <label for="#datepicker" style="min-width: 100px">Select Date</label>
-        <input type="text" class="form-control js-date-select" style="min-width: 100px" id="datepicker">
+        <label for="#datepicker" style="min-width: 7em">Select Date</label>
+        <input type="text" class="form-control js-date-select" style="min-width: 7em" id="datepicker">
       </div>
 
       <div class="col-md-10 col-xs-6">
@@ -48,7 +60,7 @@
 
       {{#each getWeekOfDates}}
       <div class="date-line">
-        <div class="col-md-2 js-date-link" data-id="{{@index}}">
+        <div class="col-md-2 js-date-link" style="text-align:center" data-id="{{@index}}">
           <a href="/day/{{dateId}}">{{dateString}}</a>:
         </div>
         <div class="col-md-10 date-badge-list">
