@@ -1,0 +1,67 @@
+body{
+  padding: 10px;
+  font-family: sans-serif;
+}
+
+#date-update-button{
+   margin-top: 28px;
+}
+
+.date-line{
+   margin-top: 10px;
+}
+
+.date-badge-list{ 
+   border: 3px solid ghostwhite;
+   border-radius: 5px;
+}
+
+.badge-light{
+   background-color: ghostwhite;
+   color: lightgray;
+}
+
+.badge-success{
+   background-color: springgreen;
+}
+
+.badge-dark{
+   background-color: black;
+}
+
+.badge-priority{
+   background-color: yellow;
+   color: black;
+}
+
+.badge-notice{
+   background-color: dimgray;
+}
+
+.badge-attendence-met{
+   background-color: limegreen;
+}
+
+.badge-attendence-unmet{
+   background-color: red;
+}
+
+.badge-available{
+   background-color: seagreen;
+}
+
+.badge-conflict{
+   background-color: maroon;
+}
+
+.badge-timeline{
+   background-color: steelblue;
+}
+
+.attendence-select-box{
+   max-width: 100px;
+}
+
+.avail-detail-text{
+   margin-left: 20px;
+}

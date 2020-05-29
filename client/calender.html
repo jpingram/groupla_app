@@ -1,0 +1,97 @@
+<template name="calender">
+  <body>
+    {{> breadcrumb}}
+    {{> dateForm}}
+    {{> weekDisplay}}
+  </body>
+</template>
+
+<template name="breadcrumb">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item active">Calender</li>
+          </ol>
+        </nav>
+      </div> <!-- END col -->
+    </div> <!-- END row -->
+  </div> <!-- END container -->
+</template>
+
+<template name="dateForm">
+  <div class="container" style="position: relative">
+    <div class="row">
+
+      <div class="col-md-2 col-xs-6">
+        <label for="#datepicker" style="min-width: 100px">Select Date</label>
+        <input type="text" class="form-control js-date-select" style="min-width: 100px" id="datepicker">
+      </div>
+
+      <div class="col-md-10 col-xs-6">
+        <button class="js-change-date" id="date-update-button">Update</button>
+      </div>
+
+    </div> <!-- END row -->
+  </div> <!-- END container -->
+</template> <!-- END dateForm template -->
+
+<template name="weekDisplay">
+  <div class="container">
+    <div class="row">
+
+      <div class="col-md-12">
+        &nbsp;
+        <h4>Viewing week of: {{getDate}}</h4>
+      </div>
+
+      {{#each getWeekOfDates}}
+      <div class="date-line">
+        <div class="col-md-2 js-date-link" data-id="{{@index}}">
+          <a href="/day/{{dateId}}">{{dateString}}</a>:
+        </div>
+        <div class="col-md-10 date-badge-list">
+          {{#unless isLogEmpty dateId}}
+
+          <!-- placeholder badge to show that a log exists for the given date in the 'week display' -->
+          <!-- <span class="badge badge-success">There's data here, alright.</span> -->
+
+          {{#if eventExists dateId}}
+          <span class="badge badge-dark">{{getEventTitle dateId}}</span>
+          {{/if}}
+
+          {{#if priorityExists dateId}}
+          <span class="badge badge-priority">PRIORITY</span>
+          {{/if}}
+
+          {{#if noticeExists dateId}}
+          <span class="badge badge-notice">NOTICE</span>
+          {{/if}}
+
+          {{#if attReqExists dateId}}
+          <span class="badge {{#if getAttReqMet dateId}}badge-attendence-met{{else}}badge-attentence-unmet{{/if}}">Attendence {{getAvailValue dateId}}/{{getAttReqValue dateId}}</span>
+          {{/if}}
+
+          {{#if availExists dateId}}
+          <span class="badge badge-available">{{getAvailValue dateId}} Available</span>
+          {{/if}}
+
+          {{#if unavailExists dateId}}
+          <span class="badge badge-conflict">{{getUnavailValue dateId}} Conflicts</span>
+          {{/if}}
+
+          {{#if timelineLogExists dateId}}
+          <span class="badge badge-timeline">Log</span>
+          {{/if}}
+
+          {{else}} <!-- isLogEmpty == true -->
+          <span class="badge badge-light">No info.</span>
+          {{/unless}} <!-- END unless isLogEmpty -->
+        </div>
+      </div>
+      {{/each}}
+
+    </div> <!-- END row -->
+  </div> <!-- END container -->
+</template> <!-- END weekDisplay template -->
