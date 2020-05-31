@@ -1,11 +1,9 @@
-import { Template } from 'meteor/templating';
-import { ReactiveVar } from 'meteor/reactive-var';
 import { Session } from 'meteor/session';
 
 const moment = require('moment');
 
 //IMPORT REQUIRED HTML FILES FOR TEMPLATE ACCESS
-import './main.html';
+import './home.html';
 import './appLayout.html';
 import './groupHomePage.html';
 import './calender.html';
@@ -17,6 +15,7 @@ import './testData.js';
 
 //SET-UP COLLECTIONS
 logs = new Mongo.Collection('dayLogs');
+groups = new Mongo.Collection('groups');
 
 //CONFIGURE THE ROUTER
 Router.configure({
@@ -31,6 +30,8 @@ if(!Session.get('active-date')){
 };
 Session.set('selected-day', undefined);
 Session.set('status', 'calender');
+Session.set('active-group', -1);
+Session.set('adding-group', false);
 
 //SET UP CALENDER META INFO AND ROUTE
 Router.onBeforeAction(
@@ -44,6 +45,11 @@ Router.onBeforeAction(
 );
 
 Router.route('/', function(){
+  Session.set('active-group', -1);
+  this.render('home');
+});
+
+Router.route('/group', function(){
   this.render('groupHomePage');
 });
 
@@ -90,6 +96,41 @@ Router.route('/day/:_id/edit', function(){
 Router.route('/timeline', function(){
   Session.set('status', 'timeline');
   this.render('timeline');
+});
+
+Template.groupList.helpers({
+  "isLoggedIn":function(){
+    return Meteor.user();
+  },
+  "groupExists":function(){
+    return groups.findOne();
+  },
+  "getGroups":function(){
+    return groups.find();
+  },
+  "isAddingGroup":function(){
+    return Session.get('adding-group');
+  },
+  "groupAddedFlag":function(){
+    return Session.get('group-added-flag');
+  },
+});
+
+Template.groupList.events({
+  "submit #addGroupForm":function(event){
+    var newName = $('#groupNameBox').prop('value');
+    if(newName.length <= 0){
+      newName = 'Untitled Group';
+    }
+    var newGroup = {
+      name:newName,
+    };
+    Meteor.call('addGroup', newGroup, function(err, res){
+      if(!res){
+        console.log('\'addGroup\': insert error');
+      }
+    });
+  },
 });
 
 Template.groupHomePage.events({
@@ -480,42 +521,10 @@ Template.timelineContent.helpers({
   },
 });
 
-/*Template.weekDisplay.events({
-  "click .js-date-link":function(event){
-    //console.log($(event.target).data('id'));
-    //console.log(Session.get('active-week')[$(event.target).data('id')].dateString);
-    Session.set('selected-day', Session.get('active-week')[$(event.target).data('id')].dateString);
-  },
-});*/
+//AUXILLARY FUNCTIONS
 
-/*Template.dayDisplay.helpers({
-  "getDateString":function(){
-    if(Session.get('selected-day')){
-      return Session.get('selected-day');
-    }else{
-      return undefined;
-    }
-  },
-});*/
-
-Template.hello.onCreated(function helloOnCreated() {
-  // counter starts at 0
-  this.counter = new ReactiveVar(0);
-});
-
-Template.hello.helpers({
-  counter() {
-    return Template.instance().counter.get();
-  },
-});
-
-Template.hello.events({
-  'click button'(event, instance) {
-    // increment the counter when button is clicked
-    instance.counter.set(instance.counter.get() + 1);
-  },
-});
-
+/*returns a set of objects representing all seven dates of the current 'active week',
+  starting with the 'active-date' Session object*/
 function setActiveWeek(){
   var currentDate = Session.get('active-date');
   var dates = [
@@ -557,11 +566,6 @@ function setActiveWeek(){
   ];
   Session.set('active-week', dates);
 };
-
-/*//takes Date object and returns string representation of Date compatible with logs
-function getDateId(date){
-
-};*/
 
 //takes date id string and returns 'logs' object
 function getLogByID(id){

@@ -83,3 +83,23 @@ body{
    text-align: center;
    background-color: lightslategray;
 };
+
+/*ul.page-top-ol{
+   background-color: blue;
+   list-style-type: none;
+   margin: 0;
+   padding: 0;
+   width: 60px;
+};
+
+.nav-li{
+   display: block inline;
+};
+
+.nav-li-left{
+   float: left;
+};
+
+.nav-li-right{
+   float: right;
+};*/

@@ -1,0 +1,96 @@
+<template name="home">
+  <body>
+    {{> navbar}}
+    {{> groupList}}
+  </body>
+</template>
+
+<template name="navbar">
+  <div class="container-fluid" style="background-color: snow">
+    <div class="row">
+      <div class="col-xs-12">
+        <ol class="page-top-ol" style="display: block; list-style-type: none; margin: 0; padding: 0;">
+          <li style="display: block; float: left;">
+            <a class="navbar-brand" style="font-family: tahoma; font-size: 2em;" href="/">
+              <strong>Groupla</strong>
+            </a>
+          </li>
+          <li style="display: block; padding: 1em; float: right;">
+            <span>{{> loginButtons}}</span>
+          </li>
+        </ol>
+      </div> <!-- END col-xs-12 -->
+    </div> <!-- END row -->
+  </div> <!-- END container -->
+</template> <!-- END template -->
+
+<template name="groupList">
+  <div class="container">
+    <div class="row">
+      {{#each getGroups}}
+      <div class="col-xs-12">
+        <h2><strong>{{_id}} - {{name}}</strong></h2>
+      </div>
+      {{/each}}
+
+      {{#unless isAddingGroup}} <!-- !isAddingGroup -->
+      <!-- need to call this function here so it runs the helper function -->
+      <!-- the helper function will call the appropriate Meteor method -->
+      <!-- {{#if groupAddedFlag}} -->
+      <!-- {{}} -->
+      <!-- {{/if}} -->
+
+      <!-- 'add group' button -->
+      <div class="col-xs-12">
+        <button class="btn btn-primary js-toggle-add-group">Add Group</button>
+      </div>
+
+      <script type="text/javascript">
+        $('.js-toggle-add-group').on('click', function(){
+          if(Session.get('adding-group') == false){
+            Session.set('adding-group', true);
+          }else{
+            Session.set('adding-group', false);
+          }
+        });
+      </script>
+      {{else}} <!-- isAddingGroup -->
+      <!-- label col -->
+      <div class="col-xs-2">
+        <p><strong>Add Group</strong></p>
+      </div>
+
+      <!-- form col -->
+      <div class="col-xs-6">
+        <form id="addGroupForm">
+          <div class="form-row">
+            <div class="form-group">
+              <input class="form-control" type="group-name-input" id="groupNameBox" placeholder="ex: Summer Softball Team" required>
+            </div>
+          </div>
+        </form>
+      </div> <!-- END form col -->
+
+      <!-- buttons col -->
+      <div class="col-xs-4">
+        <button class="btn btn-success js-confirm-new-group js-toggle-add-group">Confirm</button>
+        <button class="btn btn-secondary js-toggle-add-group">Cancel</button>
+      </div> <!-- END buttons col -->
+
+      <script type="text/javascript">
+        $('.js-confirm-new-group').on('click', function(){
+          Session.set("group-added-flag", true);
+          $('#addGroupForm').submit();
+        });
+        $('.js-toggle-add-group').on('click', function(){
+          if(Session.get('adding-group') == false){
+            Session.set('adding-group', true);
+          }else{
+            Session.set('adding-group', false);
+          }
+        });
+      </script>
+      {{/unless}} <!-- END unless isAddingGroup -->
+    </div> <!-- END row -->
+  </div> <!-- END container -->
+</template>
