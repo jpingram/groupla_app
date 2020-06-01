@@ -45,11 +45,13 @@ Router.onBeforeAction(
 );
 
 Router.route('/', function(){
+  Meteor.subscribe('allGroups');
   Session.set('active-group', -1);
   this.render('home');
 });
 
 Router.route('/g/:_gid', function(){
+  Meteor.subscribe('allGroups');
   Session.set('active-group', this.params._gid);
   this.render('groupHomePage',
     {
@@ -62,15 +64,21 @@ Router.route('/g/:_gid', function(){
 
 Router.route('/g/:_gid/calender', function(){
   Session.set('active-group', this.params._gid);
+  Meteor.subscribe('activeGroupLogs', Session.get('active-group'));
   Session.set('status', 'calender');
   this.render('calender');
 });
 
 Router.route('/g/:_gid/day/:_id', function(){
+  Meteor.subscribe('allGroups');
+
   Session.set('active-group', this.params._gid);
+  Meteor.subscribe('activeGroupLogs', Session.get('active-group'));
+
   var currentDateID = this.params._id;
   var info = currentDateID.split('-');
   var currentDate = new Date(info[2], info[0]-1, info[1]);
+
   this.render('dayDisplay', 
     {
       data:{
@@ -84,11 +92,16 @@ Router.route('/g/:_gid/day/:_id', function(){
 });
 
 Router.route('/g/:_gid/day/:_id/edit', function(){
+  Meteor.subscribe('allGroups');
+
   Session.set('active-group', this.params._gid);
+  Meteor.subscribe('activeGroupLogs', Session.get('active-group'));
+
   var currentDateID = this.params._id;
   var info = currentDateID.split('-');
   var currentDate = new Date(info[2], info[0]-1, info[1]);
   var log = getLogByID(currentDateID);
+
   this.render('dayEdit', 
     {
       data:{
@@ -107,22 +120,29 @@ Router.route('/g/:_gid/day/:_id/edit', function(){
 
 Router.route('/g/:_gid/timeline', function(){
   Session.set('active-group', this.params._gid);
+  Meteor.subscribe('activeGroupLogs', Session.get('active-group'));
   Session.set('status', 'timeline');
   this.render('timeline');
 });
 
-Template.groupList.helpers({
+Template.home.helpers({
   "isLoggedIn":function(){
     return Meteor.user();
   },
   "groupExists":function(){
+    Meteor.subscribe('allGroups');
     return groups.findOne();
   },
   "getGroups":function(){
+    Meteor.subscribe('allGroups');
     return groups.find();
   },
   "isNameEmpty":function(name){
-    return (name.length == 0);
+    if(name){
+      return (name.length == 0);
+    }else{
+      return false;
+    }
   },
   "isAddingGroup":function(){
     return Session.get('adding-group');
@@ -132,7 +152,7 @@ Template.groupList.helpers({
   },
 });
 
-Template.groupList.events({
+Template.home.events({
   "submit #addGroupForm":function(event){
     var newGroup = {
       name:$('#groupNameBox').prop('value'),
@@ -147,7 +167,11 @@ Template.groupList.events({
 
 Template.groupHomePage.helpers({
   "isNameEmpty":function(name){
-    return (name.length == 0);
+    if(name){
+      return (name.length == 0);
+    }else{
+      return false;
+    }
   },
 });
 
@@ -208,6 +232,22 @@ Template.weekDisplay.helpers({
   },
   "eventExists":function(id){
     return logs.findOne({dateId:id}).eventFlag;
+  },
+  "isNameEmpty":function(id){
+    var log = logs.findOne({dateId:id});
+    var name;
+
+    if(log){
+      name = log.name;
+    }else{
+      return true;
+    }
+
+    if(name){
+      return (name.length == 0);
+    }else{
+      return true;
+    }
   },
   "getEventTitle":function(id){
     return logs.findOne({dateId:id}).eventTitle;
@@ -308,7 +348,15 @@ Template.dayDisplay.helpers({
       return true;
     }
   },
+  "isNameEmpty":function(name){
+    if(name){
+      return (name.length == 0);
+    }else{
+      return true;
+    }
+  },
   "getAttReqMet":function(id){
+    Meteor.subscribe('activeGroupLogs', Session.get('active-group'));
     var requirement = logs.findOne({dateId:id}).attReqValue;
     if(logs.findOne({dateId:id}).availValue >= requirement){
       return true;
@@ -317,7 +365,13 @@ Template.dayDisplay.helpers({
     }
   },
   "availabilityDataExists":function(id){
-    return (logs.findOne({dateId:id}).availFlag || logs.findOne({dateId:id}).unavailFlag);
+    Meteor.subscribe('activeGroupLogs', Session.get('active-group'));
+    var log = logs.findOne({dateId:id});
+    if(log){
+      return (log.availFlag || log.unavailFlag);
+    }else{
+      return false;
+    }
   },
 });
 
@@ -326,6 +380,7 @@ Template.dayEdit.helpers({
     return (Session.get('status') == 'calender');
   },
   "setUpSession":function(id){
+    Meteor.subscribe('activeGroupLogs', Session.get('active-group'));
     var log = logs.findOne({dateId:id});
     Session.set('editEvent', false);
     Session.set('editNotice', false);
@@ -446,12 +501,14 @@ Template.dayEdit.events({
   },
   "submit #js-day-edit-form":function(event){
     var date_id = $('#dateIDBox').prop('value');
+    var group_id = Session.get('active-group');
     var info = date_id.split('-');
     var sort_id = info[2] + '-' + info[0] + '-' + info[1];
 
     //set up a temporary log object with default values
     var newLog = {
       dateId:date_id,
+      groupId:group_id,
       sortId:sort_id,
       year:info[2],
       month:info[0],
@@ -480,12 +537,7 @@ Template.dayEdit.events({
     if($('#eventCheckBox').prop('checked')){
       newLog.eventFlag = true;
 
-      var title = $('#eventTitleBox').prop('value');
-      if(title.length <= 0){
-        newLog.eventTitle = 'Untitled Event';
-      }else{
-        newLog.eventTitle = title;
-      }
+      newLog.eventTitle = $('#eventTitleBox').prop('value');
 
       newLog.eventDescription = $('#eventDescBox').prop('value');
 
@@ -547,6 +599,7 @@ Template.timelineBreadcrumb.helpers({
 
 Template.timelineContent.helpers({
   "getLogs":function(){
+    Meteor.subscribe('activeGroupLogs', Session.get('active-group'));
     return logs.find({}, {sort:{sortId:1}});
   },
   "getActiveGroup":function(){
