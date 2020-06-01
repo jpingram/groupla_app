@@ -1,111 +1,109 @@
 <template name="dayDisplay">
-  <body>
-    <!-- NAV container -->
-    <div class="container">
-      <div class="row">
+  <!-- NAV container -->
+  <div class="container">
+    <div class="row">
 
-        <div class="col-md-12">
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="/">Group Home</a></li>
-              {{#if isAppStatusCalender}}
-              <li class="breadcrumb-item"><a href="/calender">Calender</a></li>
-              {{else}}
-              <li class="breadcrumb-item"><a href="/timeline">Timeline</a></li>
-              {{/if}}
-              <li class="breadcrumb-item active">{{dateId}}</li>
-            </ol>
-          </nav>
-        </div> <!-- END col -->
-
-      </div> <!-- END row -->
-    </div> <!-- END container -->
-
-    <!-- CONTENT container -->
-    <div class="container">
-      <div class="row">
-
-        <div class="col-md-12" style="text-align:center">
-          <h2 class="jumbotron">{{dateString}}</h2>
-        </div>
-
-        <!-- displays log info only if there is a log for this date and there is info recorded in that log -->
-        {{#unless isLogEmpty log}} 
-        <div class="col-md-12">
-          {{#if log.eventFlag}}
-          <h3>
-            {{#if log.priorityFlag}}
-            **PRIORITY**
+      <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/g/{{group._id}}">Group Home</a></li>
+            {{#if isAppStatusCalender}}
+            <li class="breadcrumb-item"><a href="/g/{{group._id}}/calender">Calender</a></li>
+            {{else}}
+            <li class="breadcrumb-item"><a href="/g/{{group._id}}/timeline">Timeline</a></li>
             {{/if}}
-            <strong>{{log.eventTitle}}</strong>
-          </h3>
-          <h5>{{log.eventDescription}}</h5>
-          {{/if}} <!-- END if eventExists -->
-        </div>
+            <li class="breadcrumb-item active">{{dateId}}</li>
+          </ol>
+        </nav>
+      </div> <!-- END col -->
 
-        <div class="col-md-12">
-          {{#if log.noticeFlag}}
-          <h3><strong>--NOTICE--</strong></h3>
-          <h4>{{log.noticeDetails}}</h4>
-          {{/if}} <!-- END if noticeExists -->
-        </div>
+    </div> <!-- END row -->
+  </div> <!-- END container -->
 
-        <div class="col-md-12">
-          {{#if log.attReqFlag}}
-          <h3><strong>Attendence</strong></h3>
-          <h5 style="{{#if getAttReqMet dateId}}color:limegreen{{else}}color:red{{/if}}">
-            **{{log.availValue}}/{{log.attReqValue}} available on this date.**
-          </h5>
+  <!-- CONTENT container -->
+  <div class="container">
+    <div class="row">
 
-          {{#if log.availFlag}}
-          <h5 style="color:seagreen">**{{log.availValue}} People Available**</h5>
-          <p>{{log.availDetails}}</p>
-          {{/if}} <!-- END availExists -->
+      <div class="col-md-12" style="text-align:center">
+        <h2 class="jumbotron">{{dateString}}</h2>
+      </div>
 
-          {{#if log.unavailFlag}}
-          <h5 style="color:maroon">**{{log.unavailValue}} Schedule Conflicts**</h5>
-          <p>{{log.unavailDetails}}</p>
-          {{/if}} <!-- END unavailExists -->
+      <!-- displays log info only if there is a log for this date and there is info recorded in that log -->
+      {{#unless isLogEmpty log}} 
+      <div class="col-md-12">
+        {{#if log.eventFlag}}
+        <h3>
+          {{#if log.priorityFlag}}
+          **PRIORITY**
+          {{/if}}
+          <strong>{{log.eventTitle}}</strong>
+        </h3>
+        <h5>{{log.eventDescription}}</h5>
+        {{/if}} <!-- END if eventExists -->
+      </div>
 
-          {{else}} <!-- !attReqExists -->
-          {{#if availabilityDataExists dateId}}
-          <h3><strong>Availability</strong></h3>
+      <div class="col-md-12">
+        {{#if log.noticeFlag}}
+        <h3><strong>--NOTICE--</strong></h3>
+        <h4>{{log.noticeDetails}}</h4>
+        {{/if}} <!-- END if noticeExists -->
+      </div>
 
-          {{#if log.availFlag}}
-          <h5 style="color:seagreen">**{{log.availValue}} People Available**</h5>
-          <p>{{log.availDetails}}</p>
-          {{/if}} <!-- END availExists -->
+      <div class="col-md-12">
+        {{#if log.attReqFlag}}
+        <h3><strong>Attendence</strong></h3>
+        <h5 style="{{#if getAttReqMet dateId}}color:limegreen{{else}}color:red{{/if}}">
+          **{{log.availValue}}/{{log.attReqValue}} available on this date.**
+        </h5>
 
-          {{#if log.unavailFlag}}
-          <h5 style="color:maroon">**{{log.unavailValue}} Schedule Conflicts**</h5>
-          <p>{{log.unavailDetails}}</p>
-          {{/if}} <!-- END unavailExists -->
+        {{#if log.availFlag}}
+        <h5 style="color:seagreen">**{{log.availValue}} People Available**</h5>
+        <p>{{log.availDetails}}</p>
+        {{/if}} <!-- END availExists -->
 
-          {{/if}} <!-- END if availabilityDataExists -->
-          {{/if}} <!-- END if attReqExists -->
-        </div>
+        {{#if log.unavailFlag}}
+        <h5 style="color:maroon">**{{log.unavailValue}} Schedule Conflicts**</h5>
+        <p>{{log.unavailDetails}}</p>
+        {{/if}} <!-- END unavailExists -->
 
-        <div class="col-md-12">
-          {{#if log.timelineFlag}}
-          <h3><strong>Timeline Log For <i>{{dateString}}</i></strong></h3>
-          <p>{{log.timelineDetails}}</p>
-          {{/if}} <!-- END if timelineLogExists -->
-        </div>
-        {{else}} <!-- !logExists -->
-        <div class="col-md-12">
-          <p>No data exists for this date yet.</p>
-        </div>
-        {{/unless}} <!-- END unless isLogEmpty -->
+        {{else}} <!-- !attReqExists -->
+        {{#if availabilityDataExists dateId}}
+        <h3><strong>Availability</strong></h3>
 
-        <div class="col-md-12">
-          <a href="/day/{{dateId}}/edit">
-            <button class="btn btn-primary">
-              Edit Day Log
-            </button>
-          </a>
-        </div>
+        {{#if log.availFlag}}
+        <h5 style="color:seagreen">**{{log.availValue}} Person(s) Available**</h5>
+        <p>{{log.availDetails}}</p>
+        {{/if}} <!-- END availExists -->
 
-      </div> <!-- END row -->
-    </div> <!-- END container -->
-  </body>
+        {{#if log.unavailFlag}}
+        <h5 style="color:maroon">**{{log.unavailValue}} Schedule Conflict(s)**</h5>
+        <p>{{log.unavailDetails}}</p>
+        {{/if}} <!-- END unavailExists -->
+
+        {{/if}} <!-- END if availabilityDataExists -->
+        {{/if}} <!-- END if attReqExists -->
+      </div>
+
+      <div class="col-md-12">
+        {{#if log.timelineFlag}}
+        <h3><strong>Timeline Log For <i>{{dateString}}</i></strong></h3>
+        <p>{{log.timelineDetails}}</p>
+        {{/if}} <!-- END if timelineLogExists -->
+      </div>
+      {{else}} <!-- !logExists -->
+      <div class="col-md-12">
+        <p>No data exists for this date yet.</p>
+      </div>
+      {{/unless}} <!-- END unless isLogEmpty -->
+
+      <div class="col-md-12">
+        <a href="/g/{{group._id}}/day/{{dateId}}/edit">
+          <button class="btn btn-primary">
+            Edit Day Log
+          </button>
+        </a>
+      </div>
+
+    </div> <!-- END row -->
+  </div> <!-- END container -->
 </template> <!-- END dayDisplay template -->

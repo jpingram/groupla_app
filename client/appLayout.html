@@ -1,3 +1,27 @@
 <template name='appLayout'>
-   {{> yield}}
+  <body>
+    {{> navbar}}
+    <div style="margin-top: 2em">
+      {{> yield}}
+    </div>
+  </body>
 </template>
+
+<template name="navbar">
+  <div class="container-fluid" style="background-color: snow">
+    <div class="row">
+      <div class="col-xs-12">
+        <ol class="page-top-ol" style="display: block; list-style-type: none; margin: 0; padding: 0;">
+          <li style="display: block; float: left;">
+            <a class="navbar-brand" style="font-family: tahoma; font-size: 2em;" href="/">
+              <strong>Groupla</strong>
+            </a>
+          </li>
+          <li style="display: block; padding: 1em; float: right;">
+            <span>{{> loginButtons}}</span>
+          </li>
+        </ol>
+      </div> <!-- END col-xs-12 -->
+    </div> <!-- END row -->
+  </div> <!-- END container -->
+</template> <!-- END template -->

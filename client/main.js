@@ -49,22 +49,32 @@ Router.route('/', function(){
   this.render('home');
 });
 
-Router.route('/group', function(){
-  this.render('groupHomePage');
+Router.route('/g/:_gid', function(){
+  Session.set('active-group', this.params._gid);
+  this.render('groupHomePage',
+    {
+      data:{
+        group:groups.findOne({_id:Session.get('active-group')}),
+      }
+    }
+  );
 });
 
-Router.route('/calender', function(){
+Router.route('/g/:_gid/calender', function(){
+  Session.set('active-group', this.params._gid);
   Session.set('status', 'calender');
   this.render('calender');
 });
 
-Router.route('/day/:_id', function(){
+Router.route('/g/:_gid/day/:_id', function(){
+  Session.set('active-group', this.params._gid);
   var currentDateID = this.params._id;
   var info = currentDateID.split('-');
   var currentDate = new Date(info[2], info[0]-1, info[1]);
   this.render('dayDisplay', 
     {
       data:{
+        group:groups.findOne({_id:Session.get('active-group')}),
         dateId:currentDateID,
         dateString:currentDate.toDateString(),
         log:getLogByID(currentDateID),
@@ -73,7 +83,8 @@ Router.route('/day/:_id', function(){
   );
 });
 
-Router.route('/day/:_id/edit', function(){
+Router.route('/g/:_gid/day/:_id/edit', function(){
+  Session.set('active-group', this.params._gid);
   var currentDateID = this.params._id;
   var info = currentDateID.split('-');
   var currentDate = new Date(info[2], info[0]-1, info[1]);
@@ -81,6 +92,7 @@ Router.route('/day/:_id/edit', function(){
   this.render('dayEdit', 
     {
       data:{
+        group:groups.findOne({_id:Session.get('active-group')}),
         dateId:currentDateID,
         dateString:currentDate.toDateString(),
         log:log,
@@ -93,7 +105,8 @@ Router.route('/day/:_id/edit', function(){
   );
 });
 
-Router.route('/timeline', function(){
+Router.route('/g/:_gid/timeline', function(){
+  Session.set('active-group', this.params._gid);
   Session.set('status', 'timeline');
   this.render('timeline');
 });
@@ -108,6 +121,9 @@ Template.groupList.helpers({
   "getGroups":function(){
     return groups.find();
   },
+  "isNameEmpty":function(name){
+    return (name.length == 0);
+  },
   "isAddingGroup":function(){
     return Session.get('adding-group');
   },
@@ -118,12 +134,8 @@ Template.groupList.helpers({
 
 Template.groupList.events({
   "submit #addGroupForm":function(event){
-    var newName = $('#groupNameBox').prop('value');
-    if(newName.length <= 0){
-      newName = 'Untitled Group';
-    }
     var newGroup = {
-      name:newName,
+      name:$('#groupNameBox').prop('value'),
     };
     Meteor.call('addGroup', newGroup, function(err, res){
       if(!res){
@@ -133,12 +145,26 @@ Template.groupList.events({
   },
 });
 
+Template.groupHomePage.helpers({
+  "isNameEmpty":function(name){
+    return (name.length == 0);
+  },
+});
+
 Template.groupHomePage.events({
   "click #calender-link":function(event){
-    Router.go('/calender');
+    var path = '/g/' + Session.get('active-group') + '/calender';
+    Router.go(path);
   },
   "click #timeline-link":function(event){
-    Router.go('/timeline');
+    var path = '/g/' + Session.get('active-group') + '/timeline';
+    Router.go(path);
+  },
+});
+
+Template.breadcrumb.helpers({
+  "getActiveGroup":function(){
+    return Session.get('active-group');
   },
 });
 
@@ -173,6 +199,9 @@ Template.weekDisplay.helpers({
   },
   "getWeekOfDates":function(){
     return Session.get('active-week');
+  },
+  "getActiveGroup":function(){
+    return Session.get('active-group');
   },
   "logExists":function(id){
     return logs.findOne({dateId:id});
@@ -510,9 +539,18 @@ Template.dayEdit.events({
   },
 });
 
+Template.timelineBreadcrumb.helpers({
+  "getActiveGroup":function(){
+    return Session.get('active-group');
+  },
+});
+
 Template.timelineContent.helpers({
   "getLogs":function(){
     return logs.find({}, {sort:{sortId:1}});
+  },
+  "getActiveGroup":function(){
+    return Session.get('active-group');
   },
   "getDateString":function(id){
     var info = id.split('-');

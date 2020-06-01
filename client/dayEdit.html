@@ -1,228 +1,226 @@
 <template name="dayEdit">
-  <body>
-    <!-- NAV container -->
-    <div class="container">
-      <div class="row">
+  <!-- NAV container -->
+  <div class="container">
+    <div class="row">
 
-        <div class="col-md-12">
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="/">Group Home</a></li>
-              {{#if isAppStatusCalender}}
-              <li class="breadcrumb-item"><a href="/calender">Calender</a></li>
-              {{else}}
-              <li class="breadcrumb-item"><a href="/timeline">Timeline</a></li>
-              {{/if}}
-              <li class="breadcrumb-item"><a href="/day/{{dateId}}">{{dateId}}</a></li>
-              <li class="breadcrumb-item active">Edit</li>
-            </ol>
-          </nav>
-        </div> <!-- END col -->
+      <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/g/{{group._id}}">Group Home</a></li>
+            {{#if isAppStatusCalender}}
+            <li class="breadcrumb-item"><a href="/g/{{group._id}}/calender">Calender</a></li>
+            {{else}}
+            <li class="breadcrumb-item"><a href="/g/{{group._id}}/timeline">Timeline</a></li>
+            {{/if}}
+            <li class="breadcrumb-item"><a href="/g/{{group._id}}/day/{{dateId}}">{{dateId}}</a></li>
+            <li class="breadcrumb-item active">Edit</li>
+          </ol>
+        </nav>
+      </div> <!-- END col -->
 
-      </div> <!-- END row -->
-    </div> <!-- END container -->
+    </div> <!-- END row -->
+  </div> <!-- END container -->
 
-    <!-- CONTENT container -->
-    <div class="container">
-      <div class="row">
+  <!-- CONTENT container -->
+  <div class="container">
+    <div class="row">
 
-        <div class="col-md-12" style="text-align:center">
-          <h2 class="jumbotron" style="color:red">Editing: {{dateString}}</h2>
-        </div>
+      <div class="col-md-12" style="text-align:center">
+        <h2 class="jumbotron" style="color:red">Editing: {{dateString}}</h2>
+      </div>
 
-        <!-- run setUpSession to set all 'isEditting' Session variables to the appropriate state -->
-        {{setUpSession dateId}}
+      <!-- run setUpSession to set all 'isEditting' Session variables to the appropriate state -->
+      {{setUpSession dateId}}
 
-        <div class="col-md-12">
-          <form id="js-day-edit-form">
-            <div class="form-group">
-              <input class="form-control" type="hidden" id="dateIDBox" value="{{dateId}}" disabled>
-            </div>
+      <div class="col-md-12">
+        <form id="js-day-edit-form">
+          <div class="form-group">
+            <input class="form-control" type="hidden" id="dateIDBox" value="{{dateId}}" disabled>
+          </div>
 
-            <!-- 'Event' edit block -->
-            <div class="form-group">
-              <div class="form-check form-check-inline">
-                {{#if isEdittingEvent}}
-                <input class="form-check-input" type="checkbox" id="eventCheckBox" checked>
-                {{else}}
-                <input class="form-check-input" type="checkbox" id="eventCheckBox">
-                {{/if}}
-                <label class="form-check-label" for="eventCheckBox">Add Event</label>
-              </div>
-            </div>
-            {{#if isEdittingEvent}}
-            <hr/>
-            <div class="form-group">
-              <label for="eventTitleBox">Event Title</label>
-              <input class="form-control" type="event-title-info" id="eventTitleBox" placeholder="ex: Event Title" value="{{log.eventTitle}}">
-            </div>
+          <!-- 'Event' edit block -->
+          <div class="form-group">
             <div class="form-check form-check-inline">
-              {{#if log.priorityFlag}}
-              <input class="form-check-input" type="checkbox" id="priorityCheckBox" checked>
+              {{#if isEdittingEvent}}
+              <input class="form-check-input" type="checkbox" id="eventCheckBox" checked>
               {{else}}
-              <input class="form-check-input" type="checkbox" id="priorityCheckBox">
+              <input class="form-check-input" type="checkbox" id="eventCheckBox">
               {{/if}}
-              <label class="form-check-label" for="priotyCheckBox">Set As Priority</label>
+              <label class="form-check-label" for="eventCheckBox">Add Event</label>
             </div>
-            <div class="form-group">
-              <label for="eventDescBox">Event Description</label>
-              <textarea class="form-control" type="event-description-info" id="eventDescBox" placeholder="ex: Description of the event." rows="2" value ="{{log.eventDescription}}"></textarea>
-            </div>
-            <hr/>
-            {{/if}} <!-- END if isEdittingEvent -->
+          </div>
+          {{#if isEdittingEvent}}
+          <hr/>
+          <div class="form-group">
+            <label for="eventTitleBox">Event Title</label>
+            <input class="form-control" type="event-title-info" id="eventTitleBox" placeholder="ex: Event Title" value="{{log.eventTitle}}">
+          </div>
+          <div class="form-check form-check-inline">
+            {{#if log.priorityFlag}}
+            <input class="form-check-input" type="checkbox" id="priorityCheckBox" checked>
+            {{else}}
+            <input class="form-check-input" type="checkbox" id="priorityCheckBox">
+            {{/if}}
+            <label class="form-check-label" for="priotyCheckBox">Set As Priority</label>
+          </div>
+          <div class="form-group">
+            <label for="eventDescBox">Event Description</label>
+            <textarea class="form-control" type="event-description-info" id="eventDescBox" placeholder="ex: Description of the event." rows="2" value ="{{log.eventDescription}}"></textarea>
+          </div>
+          <hr/>
+          {{/if}} <!-- END if isEdittingEvent -->
 
-            <!-- 'Notice' edit block -->
-            <div class="form-group">
-              <div class="form-check form-check-inline">
-                {{#if isEdittingNotice}}
-                <input class="form-check-input" type="checkbox" id="noticeCheckBox" checked>
+          <!-- 'Notice' edit block -->
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              {{#if isEdittingNotice}}
+              <input class="form-check-input" type="checkbox" id="noticeCheckBox" checked>
+              {{else}}
+              <input class="form-check-input" type="checkbox" id="noticeCheckBox">
+              {{/if}}
+              <label class="form-check-label" for="noticeCheckBox">Add Notice</label>
+            </div>
+          </div>
+          {{#if isEdittingNotice}}
+          <hr/>
+          <div class="form-group">
+            <label for="noticeTextBox">Notice Details</label>
+            <textarea class="form-control" type="notice-info" id="noticeTextBox" placeholder="ex: This is a notice." rows="2" value ="{{log.noticeDetails}}"></textarea>
+          </div>
+          <hr/>
+          {{/if}} <!-- END if isEdittingNotice -->
+
+          <!-- 'Attendence Requirement' edit block -->
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              {{#if isEdittingAttendence}}
+              <input class="form-check-input" type="checkbox" id="attReqCheckBox" checked>
+              {{else}}
+              <input class="form-check-input" type="checkbox" id="attReqCheckBox">
+              {{/if}}
+              <label class="form-check-label" for="attReqCheckBox">Add Attendence Requirement</label>
+            </div>
+          </div>
+          {{#if isEdittingAttendence}}
+          <hr/>
+          <div class="form-group">
+            <label for="attendenceSelectForm">Required Number of People</label>
+            <select class="form-control attendence-select-box" id="attendenceSelectForm">
+              {{#each getAttendenceRange}}
+              <option value="{{number}}">{{number}}</option>
+              {{/each}}
+            </select>
+            <!-- set the selector to the correct value -->
+            <script type="text/javascript">$('#attendenceSelectForm').prop('value', {{attValues.attReqValue}});</script>
+          </div>
+          <hr/>
+          {{/if}} <!-- END if isEdittingAttendence -->
+
+          <!-- 'Availability' edit block -->
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              {{#if isEdittingAttendence}}
+              <input class="form-check-input" type="checkbox" id="availCheckBox" checked disabled>
+              {{else}}
+                {{#if isEdittingAvail}}
+                <input class="form-check-input" type="checkbox" id="availCheckBox" checked>
                 {{else}}
-                <input class="form-check-input" type="checkbox" id="noticeCheckBox">
-                {{/if}}
-                <label class="form-check-label" for="noticeCheckBox">Add Notice</label>
-              </div>
+                <input class="form-check-input" type="checkbox" id="availCheckBox">
+                {{/if}} <!-- END if isEdittingAvail -->
+              {{/if}} <!-- END if isEdittingAttendence -->
+              <label class="form-check-label" for="availCheckBox">Add Availability</label>
             </div>
-            {{#if isEdittingNotice}}
-            <hr/>
-            <div class="form-group">
-              <label for="noticeTextBox">Notice Details</label>
-              <textarea class="form-control" type="notice-info" id="noticeTextBox" placeholder="ex: This is a notice." rows="2" value ="{{log.noticeDetails}}"></textarea>
-            </div>
-            <hr/>
-            {{/if}} <!-- END if isEdittingNotice -->
+          </div>
+          {{#if isEdittingAvail}}
+          <hr/>
+          <div class="form-group">
+            <label for="availSelectForm">Number of People Available</label>
+            <select class="form-control attendence-select-box" id="availSelectForm">
+              {{#each getAttendenceRange}}
+              <option value="{{number}}">{{number}}</option>
+              {{/each}}
+            </select>
+            <!-- set the selector to the correct value -->
+            <script type="text/javascript">$('#availSelectForm').prop('value', {{attValues.availValue}});</script>
+          </div>
+          <div class="form-group">
+            <label for="availInfoTextBox">Availability Details</label>
+            <input class="form-control" type="availability-info" id="availInfoTextBox" placeholder="ex: So-and-so is available. So can So-and-so." value="{{log.availDetails}}">
+          </div>
+          <hr/>
+          {{/if}} <!-- END if isEdittingAvail -->
 
-            <!-- 'Attendence Requirement' edit block -->
-            <div class="form-group">
-              <div class="form-check form-check-inline">
-                {{#if isEdittingAttendence}}
-                <input class="form-check-input" type="checkbox" id="attReqCheckBox" checked>
+          <!-- 'Schedule Conflict' edit block -->
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              {{#if isEdittingAttendence}}
+              <input class="form-check-input" type="checkbox" id="unavailCheckBox" checked disabled>
+              {{else}}
+                {{#if isEdittingUnavail}}
+                <input class="form-check-input" type="checkbox" id="unavailCheckBox" checked>
                 {{else}}
-                <input class="form-check-input" type="checkbox" id="attReqCheckBox">
-                {{/if}}
-                <label class="form-check-label" for="attReqCheckBox">Add Attendence Requirement</label>
-              </div>
+                <input class="form-check-input" type="checkbox" id="unavailCheckBox">
+                {{/if}} <!-- END if isEdittingAvail -->
+              {{/if}} <!-- END if isEdittingAttendence -->
+              <label class="form-check-label" for="unavailCheckBox">Add Schedule Conflicts</label>
             </div>
-            {{#if isEdittingAttendence}}
-            <hr/>
-            <div class="form-group">
-              <label for="attendenceSelectForm">Required Number of People</label>
-              <select class="form-control attendence-select-box" id="attendenceSelectForm">
-                {{#each getAttendenceRange}}
-                <option value="{{number}}">{{number}}</option>
-                {{/each}}
-              </select>
-              <!-- set the selector to the correct value -->
-              <script type="text/javascript">$('#attendenceSelectForm').prop('value', {{attValues.attReqValue}});</script>
-            </div>
-            <hr/>
-            {{/if}} <!-- END if isEdittingAttendence -->
+          </div>
+          {{#if isEdittingUnavail}}
+          <hr/>
+          <div class="form-group">
+            <label for="unavailSelectForm">Number of People Unavailable</label>
+            <select class="form-control attendence-select-box" id="unavailSelectForm">
+              {{#each getAttendenceRange}}
+              <option value="{{number}}">{{number}}</option>
+              {{/each}}
+            </select>
+            <!-- set the selector to the correct value -->
+            <script type="text/javascript">$('#unavailSelectForm').prop('value', {{attValues.unavailValue}});</script>
+          </div>
+          <div class="form-group">
+            <label for="unavailInfoTextBox">Schedule Conflict Details</label>
+            <input class="form-control" type="schedule-conflict-info" id="unavailInfoTextBox" placeholder="ex: So-and-so can't make it. So-and-so can't either." value="{{log.unavailDetails}}">
+          </div>
+          <hr/>
+          {{/if}} <!-- END if isEdittingUnavail -->
 
-            <!-- 'Availability' edit block -->
-            <div class="form-group">
-              <div class="form-check form-check-inline">
-                {{#if isEdittingAttendence}}
-                <input class="form-check-input" type="checkbox" id="availCheckBox" checked disabled>
-                {{else}}
-                  {{#if isEdittingAvail}}
-                  <input class="form-check-input" type="checkbox" id="availCheckBox" checked>
-                  {{else}}
-                  <input class="form-check-input" type="checkbox" id="availCheckBox">
-                  {{/if}} <!-- END if isEdittingAvail -->
-                {{/if}} <!-- END if isEdittingAttendence -->
-                <label class="form-check-label" for="availCheckBox">Add Availability</label>
-              </div>
+          <!-- 'Timeline Log' edit block -->
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              {{#if isEdittingTimelineLog}}
+              <input class="form-check-input" type="checkbox" id="timelineCheckBox" checked>
+              {{else}}
+              <input class="form-check-input" type="checkbox" id="timelineCheckBox">
+              {{/if}}
+              <label class="form-check-label" for="timelineCheckBox">Add Timeline Log</label>
             </div>
-            {{#if isEdittingAvail}}
-            <hr/>
-            <div class="form-group">
-              <label for="availSelectForm">Number of People Available</label>
-              <select class="form-control attendence-select-box" id="availSelectForm">
-                {{#each getAttendenceRange}}
-                <option value="{{number}}">{{number}}</option>
-                {{/each}}
-              </select>
-              <!-- set the selector to the correct value -->
-              <script type="text/javascript">$('#availSelectForm').prop('value', {{attValues.availValue}});</script>
-            </div>
-            <div class="form-group">
-              <label for="availInfoTextBox">Availability Details</label>
-              <input class="form-control" type="availability-info" id="availInfoTextBox" placeholder="ex: So-and-so is available. So can So-and-so." value="{{log.availDetails}}">
-            </div>
-            <hr/>
-            {{/if}} <!-- END if isEdittingAvail -->
+          </div>
+          {{#if isEdittingTimelineLog}}
+          <hr/>
+          <div class="form-group">
+            <label for="timelineLogTextBox">Timeline Log Information</label>
+            <textarea class="form-control" type="timeline-log-info" id="timelineLogTextBox" placeholder="ex: These are the events that happened on this day." rows="2" value ="{{log.timelineDetails}}"></textarea>
+          </div>
+          <hr/>
+          {{/if}} <!-- END if isEdittingTimelineLog -->
 
-            <!-- 'Schedule Conflict' edit block -->
-            <div class="form-group">
-              <div class="form-check form-check-inline">
-                {{#if isEdittingAttendence}}
-                <input class="form-check-input" type="checkbox" id="unavailCheckBox" checked disabled>
-                {{else}}
-                  {{#if isEdittingUnavail}}
-                  <input class="form-check-input" type="checkbox" id="unavailCheckBox" checked>
-                  {{else}}
-                  <input class="form-check-input" type="checkbox" id="unavailCheckBox">
-                  {{/if}} <!-- END if isEdittingAvail -->
-                {{/if}} <!-- END if isEdittingAttendence -->
-                <label class="form-check-label" for="unavailCheckBox">Add Schedule Conflicts</label>
-              </div>
-            </div>
-            {{#if isEdittingUnavail}}
-            <hr/>
-            <div class="form-group">
-              <label for="unavailSelectForm">Number of People Unavailable</label>
-              <select class="form-control attendence-select-box" id="unavailSelectForm">
-                {{#each getAttendenceRange}}
-                <option value="{{number}}">{{number}}</option>
-                {{/each}}
-              </select>
-              <!-- set the selector to the correct value -->
-              <script type="text/javascript">$('#unavailSelectForm').prop('value', {{attValues.unavailValue}});</script>
-            </div>
-            <div class="form-group">
-              <label for="unavailInfoTextBox">Schedule Conflict Details</label>
-              <input class="form-control" type="schedule-conflict-info" id="unavailInfoTextBox" placeholder="ex: So-and-so can't make it. So-and-so can't either." value="{{log.unavailDetails}}">
-            </div>
-            <hr/>
-            {{/if}} <!-- END if isEdittingUnavail -->
+        </form>
+      </div>
 
-            <!-- 'Timeline Log' edit block -->
-            <div class="form-group">
-              <div class="form-check form-check-inline">
-                {{#if isEdittingTimelineLog}}
-                <input class="form-check-input" type="checkbox" id="timelineCheckBox" checked>
-                {{else}}
-                <input class="form-check-input" type="checkbox" id="timelineCheckBox">
-                {{/if}}
-                <label class="form-check-label" for="timelineCheckBox">Add Timeline Log</label>
-              </div>
-            </div>
-            {{#if isEdittingTimelineLog}}
-            <hr/>
-            <div class="form-group">
-              <label for="timelineLogTextBox">Timeline Log Information</label>
-              <textarea class="form-control" type="timeline-log-info" id="timelineLogTextBox" placeholder="ex: These are the events that happened on this day." rows="2" value ="{{log.timelineDetails}}"></textarea>
-            </div>
-            <hr/>
-            {{/if}} <!-- END if isEdittingTimelineLog -->
+      <!-- form buttons (for saving changes and cancelling) block -->
+      <div class="col-md-12">
+        <a href="/g/{{group._id}}/day/{{dateId}}">
+          <button class="btn btn-success js-update-day-log">
+            Save Changes
+          </button>
+        </a>
+        <a href="/g/{{group._id}}/day/{{dateId}}">
+          <button class="btn btn-secondary">
+            Cancel
+          </button>
+        </a>
+      </div>
 
-          </form>
-        </div>
-
-        <!-- form buttons (for saving changes and cancelling) block -->
-        <div class="col-md-12">
-          <a href="/day/{{dateId}}">
-            <button class="btn btn-success js-update-day-log">
-              Save Changes
-            </button>
-          </a>
-          <a href="/day/{{dateId}}">
-            <button class="btn btn-secondary">
-              Cancel
-            </button>
-          </a>
-        </div>
-
-      </div> <!-- END row -->
-    </div> <!-- END container -->
-  </body>
+    </div> <!-- END row -->
+  </div> <!-- END container -->
 </template> <!-- END dayEdit template -->

@@ -1,10 +1,8 @@
 <template name="calender">
-  <body>
-    {{> breadcrumb}}
-    {{> calenderTitle}}
-    {{> dateForm}}
-    {{> weekDisplay}}
-  </body>
+  {{> breadcrumb}}
+  {{> calenderTitle}}
+  {{> dateForm}}
+  {{> weekDisplay}}
 </template>
 
 <template name="breadcrumb">
@@ -13,7 +11,7 @@
       <div class="col-md-12">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Group Home</a></li>
+            <li class="breadcrumb-item"><a href="/g/{{getActiveGroup}}">Group Home</a></li>
             <li class="breadcrumb-item active">Calender</li>
           </ol>
         </nav>
@@ -61,7 +59,7 @@
       {{#each getWeekOfDates}}
       <div class="date-line">
         <div class="col-md-2 js-date-link" style="text-align:center" data-id="{{@index}}">
-          <a href="/day/{{dateId}}">{{dateString}}</a>:
+          <a href="/g/{{getActiveGroup}}/day/{{dateId}}">{{dateString}}</a>:
         </div>
         <div class="col-md-10 date-badge-list">
           {{#unless isLogEmpty dateId}}

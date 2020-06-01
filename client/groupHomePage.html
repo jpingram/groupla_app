@@ -1,40 +1,38 @@
 <template name="groupHomePage">
-  <body>
-    <!-- NAV container -->
-    <div class="container">
-      <div class="row">
+  <!-- NAV container -->
+  <div class="container">
+    <div class="row">
 
-        <div class="col-md-12">
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="#">Group Home</a></li>
-            </ol>
-          </nav>
-        </div> <!-- END col -->
+      <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item active">Group Home</li>
+          </ol>
+        </nav>
+      </div> <!-- END col -->
 
-      </div> <!-- END row -->
-    </div> <!-- END container -->
+    </div> <!-- END row -->
+  </div> <!-- END container -->
 
-    <!-- CONTENT container -->
-    <div class="container">
-      <div class="row">
+  <!-- CONTENT container -->
+  <div class="container">
+    <div class="row">
 
-        <!-- heading -->
-        <div class="col-xs-12" style="text-align:center">
-          <h1 style="font-size:4em"><strong>Group Home</strong></h1>
-        </div>
+      <!-- heading -->
+      <div class="col-xs-12" style="text-align:center">
+        <h1 style="font-size:4em"><strong>{{#if isNameEmpty group.name}}Untitled Group{{else}}{{group.name}}{{/if}}</strong></h1>
+      </div>
 
-        <!-- links -->
-        <div class="col-sm-6 col-xs-12 group-page-link" id="calender-link">
-          <h2><em>Calender</em></h2>
-          <p class="lead">View information about events, availability, notices, and more.</p>
-        </div>
-        <div class="col-sm-6 col-xs-12 group-page-link" id="timeline-link">
-          <h2><em>Timeline</em></h2>
-          <p class="lead">View timeline of information logged about previous events.</p>
-        </div>
+      <!-- links -->
+      <div class="col-sm-6 col-xs-12 group-page-link" id="calender-link">
+        <h2><em>Calender</em></h2>
+        <p class="lead">View information about events, availability, notices, and more.</p>
+      </div>
+      <div class="col-sm-6 col-xs-12 group-page-link" id="timeline-link">
+        <h2><em>Timeline</em></h2>
+        <p class="lead">View timeline of information logged about previous events.</p>
+      </div>
 
-      </div> <!-- END row -->
-    </div> <!-- END container -->
-  </body>
+    </div> <!-- END row -->
+  </div> <!-- END container -->
 </template>
