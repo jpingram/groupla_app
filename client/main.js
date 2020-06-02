@@ -141,18 +141,47 @@ Template.home.helpers({
     if(name){
       return (name.length == 0);
     }else{
-      return false;
+      return true;
     }
   },
   "isAddingGroup":function(){
     return Session.get('adding-group');
   },
-  "groupAddedFlag":function(){
-    return Session.get('group-added-flag');
+  "isEdittingGroup":function(id){
+    return (Session.get('edittingGroup') == id);
+  },
+  "isWarningRemoval":function(id){
+    return (Session.get('warningRemovalGroup') == id);
+  },
+  "removeGroup":function(id){
+    Meteor.call('removeGroup', id, function(err, res){
+      if(!res){
+        console.log('\'removeGroup\': remove error');
+      }
+    });
   },
 });
 
 Template.home.events({
+  "submit #editGroupForm":function(event){
+    var thisId = $('#groupIDBox').prop('value');
+    var name = $('#editGroupNameBox').prop('value');
+    Meteor.call('editGroup', {id:thisId, newName:name}, function(err, res){
+      if(!res){
+        console.log('\'editGroup\': update error');
+      }
+    });
+    event.preventDefault();
+  },
+  "submit #removeGroupForm":function(event){
+    var id = $('#removeGroupIDBox').prop('value');
+    Meteor.call('removeGroup', id, function(err, res){
+      if(!res){
+        console.log('\'removeGroup\': remove error');
+      }
+    });
+    event.preventDefault();
+  },
   "submit #addGroupForm":function(event){
     var newGroup = {
       name:$('#groupNameBox').prop('value'),
@@ -162,6 +191,7 @@ Template.home.events({
         console.log('\'addGroup\': insert error');
       }
     });
+    event.preventDefault();
   },
 });
 
@@ -170,7 +200,7 @@ Template.groupHomePage.helpers({
     if(name){
       return (name.length == 0);
     }else{
-      return false;
+      return true;
     }
   },
 });
@@ -541,7 +571,7 @@ Template.dayEdit.events({
 
       newLog.eventDescription = $('#eventDescBox').prop('value');
 
-      newLog.priorityFlag = $('#priorityCheckBox').prop('value');
+      newLog.priorityFlag = $('#priorityCheckBox').prop('checked');
     };
     
     if($('#noticeCheckBox').prop('checked')){
@@ -599,7 +629,6 @@ Template.timelineBreadcrumb.helpers({
 
 Template.timelineContent.helpers({
   "getLogs":function(){
-    Meteor.subscribe('activeGroupLogs', Session.get('active-group'));
     return logs.find({}, {sort:{sortId:1}});
   },
   "getActiveGroup":function(){
@@ -609,6 +638,13 @@ Template.timelineContent.helpers({
     var info = id.split('-');
     //return (info[0] + '/' + info[1] + '/' + info[2]);
     return (new Date(info[2], info[0]-1, info[1])).toDateString();
+  },
+  "isDetailsEmpty":function(details){
+    if(details){
+      return (details.length == 0);
+    }else{
+      return true;
+    }
   },
 });
 

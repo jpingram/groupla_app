@@ -29,7 +29,9 @@
         {{#if timelineFlag}}
         <div class="col-xs-12" style="text-align:center">
           <h1 style="font-size:2em"><strong>Log for: <a href="/g/{{getActiveGroup}}/day/{{dateId}}">{{getDateString dateId}}</a></strong></h1>
-          <p style="font-size:1.25em">{{timelineDetails}}</p>
+          <p style="font-size:1.25em; {{#if isDetailsEmpty timelineDetails}}color:lightgray{{/if}}">
+            {{#if isDetailsEmpty timelineDetails}}No info recorded.{{else}}{{timelineDetails}}{{/if}}
+          </p>
           <hr/>
         </div>
         {{/if}} <!-- END if timelineFlag -->

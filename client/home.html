@@ -2,24 +2,99 @@
   <div class="container">
     <div class="row">
       {{#each getGroups}}
-      <div class="col-xs-12">
-        <h2>
-          <a href="/g/{{_id}}" style="text-decordation: none">
-            <strong>{{_id}} - {{#if isNameEmpty name}}Untitled Group{{else}}{{name}}{{/if}}</strong>
-          </a>
-        </h2>
+
+      {{#unless isEdittingGroup _id}}
+      <div class="col-xs-8">
+        <a href="/g/{{_id}}" style="text-decoration: none">
+          <h2>
+              <strong>{{#if isNameEmpty name}}Untitled Group{{else}}{{name}}{{/if}}</strong>
+                
+          </h2>
+        </a>
+        <h5 style="color: lightgray">
+          <strong><em>ID: {{_id}}</em></strong>
+        </h5>
       </div>
-      {{/each}}
 
+      <div class="col-xs-4" style="margin-top:1.5em">
+        <button class="btn btn-secondary js-edit-group-{{_id}}">Options</button>
+      </div>
+
+      <script type="text/javascript">
+        $('.js-edit-group-{{_id}}').on('click', function(){
+          Session.set('edittingGroup', "{{_id}}");
+        });
+      </script>
+      {{else}} <!-- isEdittingGroup == true -->
+      <div class="col-xs-6">
+        <form id="editGroupForm">
+          <div class="form-row">
+            <div class="form-group">
+              <input class="form-control" type="hidden" id="groupIDBox" value="{{_id}}" disabled>
+            </div>
+            <div class="form-group">
+              <label for="editGroupNameBox">Edit Name:</label>
+              <input class="form-control" type="group-name-input" id="editGroupNameBox" value="{{name}}" placeholder="ex: Summer Softball Team" required>
+            </div>
+          </div>
+        </form>
+      </div> <!-- END form col -->
+
+      {{#unless isWarningRemoval _id}}
+      <div class="col-xs-6" style="text-align:center">
+        <h3><strong>Options: </strong></h3>
+        <button class="btn btn-success js-update-group">Update</button>
+        <button class="btn btn-secondary js-cancel-edit-group">Cancel</button>
+        <button class="btn btn-danger js-remove-group">Remove</button>
+      </div>
+
+      <script type="text/javascript">
+        $('.js-update-group').on('click', function(){
+          Session.set('edittingGroup', -1);
+          $('#editGroupForm').submit();
+        });
+        $('.js-cancel-edit-group').on('click', function(){
+          Session.set('edittingGroup', -1);
+        });
+        $('.js-remove-group').on('click', function(){
+          Session.set('warningRemovalGroup', "{{_id}}");
+        });
+      </script>
+      {{else}} <!-- isWarningRemoval == true -->
+      <div class="col-xs-6" style="text-align:center">
+        <!-- hidden form used to pass information because the submit() fucntions still work -->
+        <form id="removeGroupForm">
+          <input class="form-control" type="hidden" id="removeGroupIDBox" value="{{_id}}" disabled>
+        </form>
+
+        <!-- buttons in charge of conriming or canceling the removal -->
+        <h3><strong>Remove? Are you sure: </strong></h3>
+        <button class="btn btn-danger js-confirm-remove">Yes</button>
+        <button class="btn btn-secondary js-cancel-remove">No</button>
+      </div>
+
+      <script type="text/javascript">
+        $('.js-confirm-remove').on('click', function(){
+          Session.set('edittingGroup', -1);
+          Session.set('warningRemovalGroup', -1);
+          $('#removeGroupForm').submit();
+        });
+        $('.js-cancel-remove').on('click', function(){
+          Session.set('warningRemovalGroup', -1);
+        });
+      </script>
+      {{/unless}} <!-- END unless isWarningRemoval -->
+      {{/unless}} <!-- END unless isEdittingGroup -->
+
+      &nbsp;
+      <hr/>
+      {{/each}} <!-- END each getGroups -->
+    </div> <!-- END row -->
+
+    <div class="row">
       {{#unless isAddingGroup}} <!-- !isAddingGroup -->
-      <!-- need to call this function here so it runs the helper function -->
-      <!-- the helper function will call the appropriate Meteor method -->
-      <!-- {{#if groupAddedFlag}} -->
-      <!-- {{}} -->
-      <!-- {{/if}} -->
-
       <!-- 'add group' button -->
-      <div class="col-xs-12">
+      <div class="col-xs-12" Style="text-align:center">
         <button class="btn btn-primary js-toggle-add-group">Add Group</button>
       </div>
 
@@ -57,7 +132,6 @@
 
       <script type="text/javascript">
         $('.js-confirm-new-group').on('click', function(){
-          Session.set("group-added-flag", true);
           $('#addGroupForm').submit();
         });
         $('.js-toggle-add-group').on('click', function(){
