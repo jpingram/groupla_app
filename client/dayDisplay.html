@@ -36,7 +36,7 @@
           {{#if log.priorityFlag}}
           **PRIORITY**
           {{/if}}
-          <strong>{{#if isNameEmpty log.eventTitle}}Untitled Event{{else}}{{log.eventTitle}}{{/if}}</strong>
+          <strong> Event: {{#if isNameEmpty log.eventTitle}}Untitled Event{{else}}{{log.eventTitle}}{{/if}}</strong>
         </h3>
         <h5>{{log.eventDescription}}</h5>
         {{/if}} <!-- END if log.eventFlag -->

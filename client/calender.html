@@ -68,7 +68,7 @@
           <!-- <span class="badge badge-success">There's data here, alright.</span> -->
 
           {{#if eventExists dateId}}
-          <span class="badge badge-dark">{{#if isNameEmpty dateId}}Untitled Event{{else}}{{getEventTitle dateId}}{{/if}}</span>
+          <span class="badge badge-dark">{{#if isTitleEmpty dateId}}Untitled Event{{else}}{{getEventTitle dateId}}{{/if}}</span>
           {{/if}}
 
           {{#if priorityExists dateId}}

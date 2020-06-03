@@ -293,18 +293,18 @@ Template.weekDisplay.helpers({
   "eventExists":function(id){
     return logs.findOne({dateId:id}).eventFlag;
   },
-  "isNameEmpty":function(id){
+  "isTitleEmpty":function(id){
     var log = logs.findOne({dateId:id});
-    var name;
+    var title;
 
     if(log){
-      name = log.name;
+      title = log.eventTitle;
     }else{
       return true;
     }
 
-    if(name){
-      return (name.length == 0);
+    if(title){
+      return (title.length == 0);
     }else{
       return true;
     }
