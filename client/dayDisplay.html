@@ -39,14 +39,14 @@
           <strong>{{#if isNameEmpty log.eventTitle}}Untitled Event{{else}}{{log.eventTitle}}{{/if}}</strong>
         </h3>
         <h5>{{log.eventDescription}}</h5>
-        {{/if}} <!-- END if eventExists -->
+        {{/if}} <!-- END if log.eventFlag -->
       </div>
 
       <div class="col-md-12">
         {{#if log.noticeFlag}}
         <h3><strong>--NOTICE--</strong></h3>
         <h4>{{log.noticeDetails}}</h4>
-        {{/if}} <!-- END if noticeExists -->
+        {{/if}} <!-- END if log.noticeFlag -->
       </div>
 
       <div class="col-md-12">
@@ -59,36 +59,36 @@
         {{#if log.availFlag}}
         <h5 style="color:seagreen">**{{log.availValue}} People Available**</h5>
         <p>{{log.availDetails}}</p>
-        {{/if}} <!-- END availExists -->
+        {{/if}} <!-- END log.availFlag -->
 
         {{#if log.unavailFlag}}
         <h5 style="color:maroon">**{{log.unavailValue}} Schedule Conflicts**</h5>
         <p>{{log.unavailDetails}}</p>
-        {{/if}} <!-- END unavailExists -->
+        {{/if}} <!-- END log.unavailFlag -->
 
-        {{else}} <!-- !attReqExists -->
+        {{else}} <!-- !log.attReqFlag -->
         {{#if availabilityDataExists dateId}}
         <h3><strong>Availability</strong></h3>
 
         {{#if log.availFlag}}
         <h5 style="color:seagreen">**{{log.availValue}} Person(s) Available**</h5>
         <p>{{log.availDetails}}</p>
-        {{/if}} <!-- END availExists -->
+        {{/if}} <!-- END log.availFlag -->
 
         {{#if log.unavailFlag}}
         <h5 style="color:maroon">**{{log.unavailValue}} Schedule Conflict(s)**</h5>
         <p>{{log.unavailDetails}}</p>
-        {{/if}} <!-- END unavailExists -->
+        {{/if}} <!-- END log.unavailFlag -->
 
         {{/if}} <!-- END if availabilityDataExists -->
-        {{/if}} <!-- END if attReqExists -->
+        {{/if}} <!-- END if log.attReqFlag -->
       </div>
 
       <div class="col-md-12">
         {{#if log.timelineFlag}}
         <h3><strong>Timeline Log For <i>{{dateString}}</i></strong></h3>
         <p>{{log.timelineDetails}}</p>
-        {{/if}} <!-- END if timelineLogExists -->
+        {{/if}} <!-- END if log.timelineFlag -->
       </div>
       {{else}} <!-- !logExists -->
       <div class="col-md-12">
@@ -96,6 +96,7 @@
       </div>
       {{/unless}} <!-- END unless isLogEmpty -->
 
+      {{#if isOwnerLoggedIn group._id}}
       <div class="col-md-12">
         <a href="/g/{{group._id}}/day/{{dateId}}/edit">
           <button class="btn btn-primary">
@@ -103,6 +104,7 @@
           </button>
         </a>
       </div>
+      {{/if}}
 
     </div> <!-- END row -->
   </div> <!-- END container -->

@@ -1,5 +1,9 @@
 Meteor.publish('allGroups', function(){
-  return groups.find();
+  if(this.userId){
+    return groups.find({userId:this.userId});
+  }else{
+    return;
+  }
 });
 
 Meteor.publish('activeGroupLogs', function(activeGroup){

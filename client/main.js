@@ -22,6 +22,11 @@ Router.configure({
   layoutTemplate: 'appLayout'
 });
 
+//CONFIGuRE ACCOUNTS_UI
+Accounts.ui.config({
+  passwordSignupFields: 'USERNAME_AND_EMAIL'
+});
+
 //SET UP SESSION VARIABLES
 //start by setting up week display which defaults to the most recent sunday
 if(!Session.get('active-date')){
@@ -45,9 +50,13 @@ Router.onBeforeAction(
 );
 
 Router.route('/', function(){
-  Meteor.subscribe('allGroups');
-  Session.set('active-group', -1);
-  this.render('home');
+  if(Meteor.user()){
+    Meteor.subscribe('allGroups');
+    Session.set('active-group', -1);
+    this.render('home');
+  }else{
+    this.render('landingPage');
+  }
 });
 
 Router.route('/g/:_gid', function(){
@@ -92,30 +101,41 @@ Router.route('/g/:_gid/day/:_id', function(){
 });
 
 Router.route('/g/:_gid/day/:_id/edit', function(){
-  Meteor.subscribe('allGroups');
+  if(Meteor.user())
+  {
+    Meteor.subscribe('allGroups');
+    if(groups.findOne({_id:this.params._gid})){
 
-  Session.set('active-group', this.params._gid);
-  Meteor.subscribe('activeGroupLogs', Session.get('active-group'));
+      Session.set('active-group', this.params._gid);
+      Meteor.subscribe('activeGroupLogs', Session.get('active-group'));
 
-  var currentDateID = this.params._id;
-  var info = currentDateID.split('-');
-  var currentDate = new Date(info[2], info[0]-1, info[1]);
-  var log = getLogByID(currentDateID);
+      var currentDateID = this.params._id;
+      var info = currentDateID.split('-');
+      var currentDate = new Date(info[2], info[0]-1, info[1]);
+      var log = getLogByID(currentDateID);
 
-  this.render('dayEdit', 
-    {
-      data:{
-        group:groups.findOne({_id:Session.get('active-group')}),
-        dateId:currentDateID,
-        dateString:currentDate.toDateString(),
-        log:log,
-        //attendence statistics:
-        //added here to limit database queries
-        //when loading selectors in template
-        attValues:getDefaultAttValues(log),
-      }
+      this.render('dayEdit', 
+        {
+          data:{
+            group:groups.findOne({_id:Session.get('active-group')}),
+            dateId:currentDateID,
+            dateString:currentDate.toDateString(),
+            log:log,
+            //attendence statistics:
+            //added here to limit database queries
+            //when loading selectors in template
+            attValues:getDefaultAttValues(log),
+          }
+        }
+      );
+    }else{
+      var path = '/g/' + this.params._gid + '/day/' + this.params._id;
+      Router.go(path);
     }
-  );
+  }else{
+    var path = '/g/' + this.params._gid + '/day/' + this.params._id;
+    Router.go(path);
+  }
 });
 
 Router.route('/g/:_gid/timeline', function(){
@@ -185,6 +205,7 @@ Template.home.events({
   "submit #addGroupForm":function(event){
     var newGroup = {
       name:$('#groupNameBox').prop('value'),
+      userId:Meteor.user()._id,
     };
     Meteor.call('addGroup', newGroup, function(err, res){
       if(!res){
@@ -240,10 +261,7 @@ Template.dateForm.events({
     Session.set('active-date', new Date(info[2], info[0]-1, info[1]));
     setActiveWeek();
     Session.set('selected-day', undefined);
-    //console.log('in Template.dateForm.events');
-    //console.log($('.js-date-select'));
-    //console.log(text);
-    //console.log(info[0] + " " + info[1] + " " + info [2]);
+    event.preventDefault();
   },
 });
 
@@ -399,6 +417,17 @@ Template.dayDisplay.helpers({
     var log = logs.findOne({dateId:id});
     if(log){
       return (log.availFlag || log.unavailFlag);
+    }else{
+      return false;
+    }
+  },
+  "isOwnerLoggedIn":function(groupId){
+    if(Meteor.user()){
+      if(groups.findOne({_id:groupId, userId:Meteor.user()._id})){
+        return true;
+      }else{
+        return false;
+      }
     }else{
       return false;
     }
