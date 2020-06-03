@@ -1,8 +1,8 @@
 <template name="landingPage">
   <div class="container">
     <div class="row">
-      <div class="col-xs-12" style="text-align:center">
-        <h1 style="font-size:3.75em"><strong>Welcome To <em>Groupla</em></strong></h1>
+      <div class="col-xs-12" style="text-align: center">
+        <h1 style="font-size: 3.75em"><strong>Welcome To <em>Groupla</em></strong></h1>
         <h3><strong>Your premiere group planning and cataloging app.</strong></h3>
         <h3><strong>Log in or sign up to get started!</strong></h3>
       </div>
@@ -13,6 +13,29 @@
 <template name="home">
   <div class="container">
     <div class="row">
+      <!-- page heading -->
+      <div class="col-xs-12" style="text-align: center">
+        <h1 style="font-size: 3em"><strong>Welcome, {{getUsername}}!</strong></h1>
+        <!-- if the user has no groups yet, display a message -->
+        {{#unless groupExists}}
+        <div style="color: lightgray;">
+          <h2>
+            <strong>No groups yet!</strong>
+          </h2>
+          <h4>
+            <strong>If you want to create a new group, hit the "Add Group" button.</strong>
+          </h4>
+        </div>
+        {{else}} <!-- if groupExists, display existing group message -->
+        <div style="color: lightgray;">
+          <h4><strong>Here are all of your current groups:</strong></h4>
+        </div>
+        {{/unless}} <!-- END unless groupExists -->
+        <hr/>
+      </div>
+
+      <!-- page content -->
+      <!-- if there are existing groups for this user, display groups -->
       {{#each getGroups}}
 
       {{#unless isEdittingGroup _id}}

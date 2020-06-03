@@ -21,20 +21,26 @@
 <template name="timelineContent">
   <div class="container">
     <div class="row">
-      <div class="col-xs-12" style="text-align:center">
+      <div class="col-xs-12" style="text-align: center">
         <h2 class="jumbotron"><strong>Timeline</strong></h2>
       </div>
 
-      {{#each getLogs}}
-        {{#if timelineFlag}}
-        <div class="col-xs-12" style="text-align:center">
-          <h1 style="font-size:2em"><strong>Log for: <a href="/g/{{getActiveGroup}}/day/{{dateId}}">{{getDateString dateId}}</a></strong></h1>
-          <p style="font-size:1.25em; {{#if isDetailsEmpty timelineDetails}}color:lightgray{{/if}}">
-            {{#if isDetailsEmpty timelineDetails}}No info recorded.{{else}}{{timelineDetails}}{{/if}}
-          </p>
-          <hr/>
-        </div>
-        {{/if}} <!-- END if timelineFlag -->
+      {{#unless logsExist}}
+      <div class="col-xs-12" style="text-align: center">
+        <h1 style="font-size: 2em; color: lightgray"><strong>No logs recorded.</strong></h1>
+        &nbsp;
+        <hr/>
+      </div>
+      {{/unless}}
+
+      {{#each logs}}
+      <div class="col-xs-12" style="text-align: center">
+        <h1 style="font-size: 2em"><strong>Log for: <a href="/g/{{getActiveGroup}}/day/{{dateId}}">{{getDateString dateId}}</a></strong></h1>
+        <p style="font-size: 1.25em; {{#if isDetailsEmpty timelineDetails}}color: lightgray{{/if}};">
+          {{#if isDetailsEmpty timelineDetails}}No info recorded.{{else}}{{timelineDetails}}{{/if}}
+        </p>
+        <hr/>
+      </div>
       {{/each}} <!-- END each getLogs -->
     </div> <!-- END row -->
   </div> <!-- END container -->

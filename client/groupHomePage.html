@@ -37,13 +37,16 @@
         <p class="lead">View timeline of information logged about previous events.</p>
       </div>
 
+      &nbsp;
+      <hr/>
+
       <!-- page URL -->
       <div class="col-xs-12" style="text-align: center">
         <div class="form-group">
           <label for="siteURLBox">Group Link: </label>
           <input class="form-control-plaintext" style="width: 25em" type="site-URL-box" id="siteURLBox" value="" readonly>
           <script>
-            $('#siteURLBox').prop('value', document.URL);
+            $('#siteURLBox').prop('value', '{{URL}}');
           </script>
         </div>
       </div>

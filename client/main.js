@@ -11,11 +11,12 @@ import './dayDisplay.html';
 import './dayEdit.html';
 import './timeline.html';
 
-import './testData.js';
-
 //SET-UP COLLECTIONS
 logs = new Mongo.Collection('dayLogs');
 groups = new Mongo.Collection('groups');
+
+//SET CONSTANTS
+const siteURL = "localhost:3000";
 
 //CONFIGURE THE ROUTER
 Router.configure({
@@ -66,6 +67,7 @@ Router.route('/g/:_gid', function(){
     {
       data:{
         group:groups.findOne({_id:Session.get('active-group')}),
+        URL:siteURL + "/g/" + this.params._gid,
       }
     }
   );
@@ -142,7 +144,13 @@ Router.route('/g/:_gid/timeline', function(){
   Session.set('active-group', this.params._gid);
   Meteor.subscribe('activeGroupLogs', Session.get('active-group'));
   Session.set('status', 'timeline');
-  this.render('timeline');
+  this.render('timeline', 
+    {
+      data:{
+        logs:logs.find({timelineFlag:true}, {sort:{sortId:1}}),
+      }
+    }
+  );
 });
 
 Template.home.helpers({
@@ -150,11 +158,14 @@ Template.home.helpers({
     return Meteor.user();
   },
   "groupExists":function(){
-    Meteor.subscribe('allGroups');
+    Meteor.subscribe('ownedGroups');
     return groups.findOne();
   },
+  "getUsername":function(){
+    return Meteor.user().username;
+  },
   "getGroups":function(){
-    Meteor.subscribe('allGroups');
+    Meteor.subscribe('ownedGroups');
     return groups.find();
   },
   "isNameEmpty":function(name){
@@ -658,15 +669,15 @@ Template.timelineBreadcrumb.helpers({
 });
 
 Template.timelineContent.helpers({
-  "getLogs":function(){
-    return logs.find({}, {sort:{sortId:1}});
+  "logsExist":function(){
+    Meteor.subscribe('activeGroupLogs', Session.get('active-group'));
+    return logs.findOne({timelineFlag:true});
   },
   "getActiveGroup":function(){
     return Session.get('active-group');
   },
   "getDateString":function(id){
     var info = id.split('-');
-    //return (info[0] + '/' + info[1] + '/' + info[2]);
     return (new Date(info[2], info[0]-1, info[1])).toDateString();
   },
   "isDetailsEmpty":function(details){
@@ -747,100 +758,4 @@ function getDefaultAttValues(log){
       unavailValue:0,
     };
   }
-}
-
-//OPTIONAL CODE TO ADD TEST DATA
-/*if(logs.findOne() == undefined){
-  logs.insert({
-    dateId:"05-30-2020",
-    sortId:"2020-05-30",
-    year:2020,
-    month:05,
-    day:30,
-    eventFlag:true,
-    eventTitle:"Road Trip",
-    eventDescription:"We've grabbed our friends and we're going on an adventure.",
-    priorityFlag:false,
-    noticeFlag:true,
-    noticeDetails:"We meet at the gas station at 6am and leave at 6:30!",
-    attReqFlag:false,
-    attReqValue:undefined,
-    availFlag:false,
-    availValue:undefined,
-    availDetails:"",
-    unavailFlag:false,
-    unavailValue:undefined,
-    unavailDetails:"",
-    timelineFlag:false,
-    timelineDetails:"",
-  });
-  logs.insert({
-    dateId:"05-26-2020",
-    sortId:"2020-05-26",
-    year:2020,
-    month:05,
-    day:26,
-    eventFlag:false,
-    eventTitle:"Road Trip",
-    eventDescription:"We've grabbed our friends and we're going on an adventure.",
-    priorityFlag:false,
-    noticeFlag:true,
-    noticeDetails:"Make sure to start packing for the road trip now!",
-    attReqFlag:false,
-    attReqValue:undefined,
-    availFlag:false,
-    availValue:undefined,
-    availDetails:"",
-    unavailFlag:false,
-    unavailValue:undefined,
-    unavailDetails:"",
-    timelineFlag:false,
-    timelineDetails:"",
-  });
-  logs.insert({
-    dateId:"05-25-2020",
-    sortId:"2020-05-25",
-    year:2020,
-    month:05,
-    day:25,
-    eventFlag:true,
-    eventTitle:"Meeting",
-    eventDescription:"We gotta plan our moves going forward.",
-    priorityFlag:true,
-    noticeFlag:false,
-    noticeDetails:"",
-    attReqFlag:true,
-    attReqValue:10,
-    availFlag:true,
-    availValue:11,
-    availDetails:"",
-    unavailFlag:true,
-    unavailValue:3,
-    unavailDetails:"",
-    timelineFlag:true,
-    timelineDetails:"Meeting went well enough. A lot was discussed and progress was made.",
-  });
-  logs.insert({
-    dateId:"05-15-2020",
-    sortId:"2020-05-15",
-    year:2020,
-    month:05,
-    day:15,
-    eventFlag:true,
-    eventTitle:"BBQ",
-    eventDescription:"Just hangin' out and grilling.",
-    priorityFlag:false,
-    noticeFlag:false,
-    noticeDetails:"",
-    attReqFlag:false,
-    attReqValue:undefined,
-    availFlag:false,
-    availValue:undefined,
-    availDetails:"",
-    unavailFlag:false,
-    unavailValue:undefined,
-    unavailDetails:"",
-    timelineFlag:true,
-    timelineDetails:"It was fun! A lot of people we able to make it and the hot dogs were delicious!",
-  });
-};*/
+};
