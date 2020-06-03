@@ -20,7 +20,6 @@
         <a href="/g/{{_id}}" style="text-decoration: none">
           <h2>
               <strong>{{#if isNameEmpty name}}Untitled Group{{else}}{{name}}{{/if}}</strong>
-                
           </h2>
         </a>
         <h5 style="color: lightgray">
@@ -28,7 +27,7 @@
         </h5>
       </div>
 
-      <div class="col-xs-4" style="margin-top:1.5em">
+      <div class="col-xs-4" style="margin-top: 1.5em">
         <button class="btn btn-secondary js-edit-group-{{_id}}">Options</button>
       </div>
 
@@ -53,7 +52,7 @@
       </div> <!-- END form col -->
 
       {{#unless isWarningRemoval _id}}
-      <div class="col-xs-6" style="text-align:center">
+      <div class="col-xs-6" style="text-align: center">
         <h3><strong>Options: </strong></h3>
         <button class="btn btn-success js-update-group">Update</button>
         <button class="btn btn-secondary js-cancel-edit-group">Cancel</button>
@@ -106,7 +105,7 @@
     <div class="row">
       {{#unless isAddingGroup}} <!-- !isAddingGroup -->
       <!-- 'add group' button -->
-      <div class="col-xs-12" Style="text-align:center">
+      <div class="col-xs-12" Style="text-align: center">
         <button class="btn btn-primary js-toggle-add-group">Add Group</button>
       </div>
 

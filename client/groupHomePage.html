@@ -19,8 +19,12 @@
     <div class="row">
 
       <!-- heading -->
-      <div class="col-xs-12" style="text-align:center">
-        <h1 style="font-size:4em"><strong>{{#if isNameEmpty group.name}}Untitled Group{{else}}{{group.name}}{{/if}}</strong></h1>
+      <div class="col-xs-12" style="text-align: center">
+        <h1 style="font-size: 4em"><strong>{{#if isNameEmpty group.name}}Untitled Group{{else}}{{group.name}}{{/if}}</strong></h1>
+        <h3 style="color: lightgray">
+          <strong><em>Created by: {{group.ownerUsername}}</em></strong>
+        </h3>
+        &nbsp;
       </div>
 
       <!-- links -->
@@ -31,6 +35,17 @@
       <div class="col-sm-6 col-xs-12 group-page-link" id="timeline-link">
         <h2><em>Timeline</em></h2>
         <p class="lead">View timeline of information logged about previous events.</p>
+      </div>
+
+      <!-- page URL -->
+      <div class="col-xs-12" style="text-align: center">
+        <div class="form-group">
+          <label for="siteURLBox">Group Link: </label>
+          <input class="form-control-plaintext" style="width: 25em" type="site-URL-box" id="siteURLBox" value="" readonly>
+          <script>
+            $('#siteURLBox').prop('value', document.URL);
+          </script>
+        </div>
       </div>
 
     </div> <!-- END row -->

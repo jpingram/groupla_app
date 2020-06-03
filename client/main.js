@@ -51,7 +51,7 @@ Router.onBeforeAction(
 
 Router.route('/', function(){
   if(Meteor.user()){
-    Meteor.subscribe('allGroups');
+    Meteor.subscribe('ownedGroups');
     Session.set('active-group', -1);
     this.render('home');
   }else{
@@ -103,7 +103,7 @@ Router.route('/g/:_gid/day/:_id', function(){
 Router.route('/g/:_gid/day/:_id/edit', function(){
   if(Meteor.user())
   {
-    Meteor.subscribe('allGroups');
+    Meteor.subscribe('ownedGroups');
     if(groups.findOne({_id:this.params._gid})){
 
       Session.set('active-group', this.params._gid);
@@ -206,6 +206,7 @@ Template.home.events({
     var newGroup = {
       name:$('#groupNameBox').prop('value'),
       userId:Meteor.user()._id,
+      ownerUsername:Meteor.user().username,
     };
     Meteor.call('addGroup', newGroup, function(err, res){
       if(!res){
